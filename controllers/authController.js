@@ -62,6 +62,7 @@ export const postLogIn = async (req, res, next) => {
       user: {
         id: user._id,
         username: user.username,
+        isLoggedIn: req.session.isLoggedIn,
       },
     });
   } catch (err) {

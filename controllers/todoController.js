@@ -6,7 +6,7 @@ export const getTodos = async (req, res, next) => {
     const userId = req.session?.userId;
     const isLoggedIn = req.session?.isLoggedIn;
 
-    console.log(isLoggedIn);
+    console.log(req.session);
     if (!isLoggedIn) {
       return res.status(401).json({ message: "User not authenticated" });
     } else {
@@ -16,7 +16,7 @@ export const getTodos = async (req, res, next) => {
 
       console.log(userTasks);
 
-      return res.status(200).json({ message: "Todos Fetched" });
+      return res.status(200).json(userTasks);
     }
   } catch (err) {
     return res.status(400).json({ message: "here in catch" });
