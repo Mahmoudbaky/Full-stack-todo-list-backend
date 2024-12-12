@@ -25,9 +25,11 @@ export const getTodos = async (req, res, next) => {
 
 export const postNewTodo = async (req, res, next) => {
   try {
-    const userId = req.session?.userId;
+    // const userId = req.session?.userId;
     const username = req.session?.username;
     const isLoggedIn = req.session?.isLoggedIn;
+
+    const { userId, task } = req.body;
 
     if (!isLoggedIn) {
       return res.status(401).json({ message: "User not authenticated" });
@@ -36,9 +38,12 @@ export const postNewTodo = async (req, res, next) => {
         username: username,
       });
 
+      // console.log(req.body.id);
+      // console.log(req.body.text);
+
       const newTodo = new Todo({
         userId: userId,
-        text: req.body.text,
+        text: task,
         completed: false,
       });
 
