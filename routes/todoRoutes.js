@@ -4,9 +4,11 @@ import * as todoController from "../controllers/todoController.js";
 
 export const router = express.Router();
 
+import { verifyToken } from "../Middleware/verifyToken.js";
+
 router.get("/todos", todoController.getTodos);
 
-router.post("/new-todo", todoController.postNewTodo);
+router.post("/new-todo", verifyToken, todoController.postNewTodo);
 
 router.put("/update-todo/:id", todoController.putUpdateTodoStatus);
 

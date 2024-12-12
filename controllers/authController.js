@@ -1,7 +1,10 @@
 import User from "../models/user.js";
-import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import passport from "passport";
+import dotenv from "dotenv";
+
+dotenv.config();
+
+const secretKey = process.env.JWT_SECRET;
 
 // Register
 export const postSignUp = async (req, res, next) => {
@@ -49,6 +52,12 @@ export const postLogIn = async (req, res, next) => {
       return res.status(400).json({ message: "Invalid credentials 2" });
     }
 
+    const token = jwt.sign(
+      { id: user._id, username: user.username },
+      secretKey,
+      { expiresIn: "1d" }
+    );
+
     // Create session
     req.session.userId = user._id;
     req.session.username = user.username;
@@ -59,11 +68,7 @@ export const postLogIn = async (req, res, next) => {
 
     res.json({
       message: "Login successful",
-      user: {
-        id: user._id,
-        username: user.username,
-        isLoggedIn: req.session.isLoggedIn,
-      },
+      token,
     });
   } catch (err) {
     console.error("Login error:", err);

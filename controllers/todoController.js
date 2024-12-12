@@ -42,7 +42,7 @@ export const postNewTodo = async (req, res, next) => {
       // console.log(req.body.text);
 
       const newTodo = new Todo({
-        userId: userId,
+        userId: req.userId,
         text: task,
         completed: false,
       });
