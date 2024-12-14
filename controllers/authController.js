@@ -15,7 +15,7 @@ export const postSignUp = async (req, res, next) => {
 
     const findUser = await User.findOne({ username: username });
     if (findUser) {
-      res.status(201).json({ message: "user already exist" });
+      res.status(201).json({ message: "user already exist", userExist: true });
     } else {
       if (password === rePassword) {
         // const hasedPassword = await bcrypt.hash(password, 12);
@@ -25,9 +25,11 @@ export const postSignUp = async (req, res, next) => {
           todoList: [],
         });
         await user.save(); // save operation must be await
-        res.status(201).json({ message: "user created" }); // must add .json or .send to prevent the "keep loading screen"
+        res.status(200).json({ message: "user created" }); // must add .json or .send to prevent the "keep loading screen"
       } else {
-        res.status(400).json({ message: "Passwords do not match" });
+        res
+          .status(201)
+          .json({ message: "Passwords do not match", passwordConfirm: true });
       }
     }
   } catch (err) {
@@ -44,12 +46,16 @@ export const postLogIn = async (req, res, next) => {
     const user = await User.findOne({ username: username });
 
     if (!user) {
-      return res.status(404).json({ message: "Invalid credentials 1" });
+      return res
+        .status(201)
+        .json({ message: "Invalid credentials 1", userExist: true });
     }
 
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
-      return res.status(400).json({ message: "Invalid credentials 2" });
+      return res
+        .status(201)
+        .json({ message: "Invalid credentials 2", passwordMatch: true });
     }
 
     const token = jwt.sign(
@@ -63,10 +69,10 @@ export const postLogIn = async (req, res, next) => {
     req.session.username = user.username;
     req.session.isLoggedIn = true;
 
-    console.log("Session:", req.session.username);
-    console.log("Session:", req.session.userId);
+    // console.log("Session:", req.session.username);
+    // console.log("Session:", req.session.userId);
 
-    res.json({
+    res.status(200).json({
       message: "Login successful",
       token,
     });
@@ -77,11 +83,6 @@ export const postLogIn = async (req, res, next) => {
 };
 
 // Logout
-export const logOut = (req, res, next) => {
-  req.session.destroy((err) => {
-    if (err) {
-      return res.status(500).json({ message: "Could not log out" });
-    }
-    res.json({ message: "Logout successful" });
-  });
+export const logOut = async (req, res, next) => {
+  return res.status(200).json({ message: "Logout successful" });
 };

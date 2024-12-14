@@ -6,12 +6,16 @@ export const router = express.Router();
 
 import { verifyToken } from "../Middleware/verifyToken.js";
 
-router.get("/todos", todoController.getTodos);
+router.get("/todos", verifyToken, todoController.getTodos);
 
 router.post("/new-todo", verifyToken, todoController.postNewTodo);
 
-router.put("/update-todo/:id", todoController.putUpdateTodoStatus);
+router.put("/update-todo/:id", verifyToken, todoController.putUpdateTodoStatus);
 
-router.delete("/delete-completed", todoController.deleteCompletedTodos);
+router.delete(
+  "/delete-completed",
+  verifyToken,
+  todoController.deleteCompletedTodos
+);
 
 // router.delete("/delete-todo/:id", todoController.deleteTodo);
