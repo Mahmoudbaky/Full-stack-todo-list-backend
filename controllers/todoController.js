@@ -77,15 +77,15 @@ export const putUpdateTodoStatus = async (req, res, next) => {
 
 export const putUpdateTodo = async (req, res, next) => {
   try {
-    const { text } = req.body;
+    const updatedTodo = req.body.updatedTodo;
 
-    console.log(text);
+    // console.log(req.body._id);
+    // console.log(req.body.text);
 
-    const todoId = req.params.id;
-    console.log(todoId);
-    const todo = await Todo.findOne({ _id: todoId });
+    console.log(req.body.updatedTodo);
+    const todo = await Todo.findOne({ _id: updatedTodo._id });
 
-    todo.text = text;
+    todo.text = updatedTodo.text;
     todo.save();
     return res.status(200).json({ message: "Task updated" });
   } catch (err) {
@@ -96,7 +96,7 @@ export const putUpdateTodo = async (req, res, next) => {
 
 export const deleteCompletedTodos = async (req, res, next) => {
   try {
-    const isLoggedIn = req.session?.isLoggedIn;
+    // const isLoggedIn = req.session?.isLoggedIn;
 
     const completedTodos = await Todo.find({ completed: true });
     const completedTodoIds = completedTodos.map((todo) => todo._id);
