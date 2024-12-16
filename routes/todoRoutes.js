@@ -12,6 +12,10 @@ router.post("/new-todo", verifyToken, todoController.postNewTodo);
 
 router.put("/update-todo/:id", verifyToken, todoController.putUpdateTodoStatus);
 
+router.put("/update/:id", verifyToken, todoController.putUpdateTodo);
+
+// router.delete("/delete-todo/:id", verifyToken, todoController.deleteTodo);
+
 router.delete(
   "/delete-completed",
   verifyToken,

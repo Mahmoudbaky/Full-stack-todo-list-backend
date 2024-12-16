@@ -75,6 +75,25 @@ export const putUpdateTodoStatus = async (req, res, next) => {
   }
 };
 
+export const putUpdateTodo = async (req, res, next) => {
+  try {
+    const { text } = req.body;
+
+    console.log(text);
+
+    const todoId = req.params.id;
+    console.log(todoId);
+    const todo = await Todo.findOne({ _id: todoId });
+
+    todo.text = text;
+    todo.save();
+    return res.status(200).json({ message: "Task updated" });
+  } catch (err) {
+    console.log(err);
+    return res.status(400).json({ message: "here in catch" });
+  }
+};
+
 export const deleteCompletedTodos = async (req, res, next) => {
   try {
     const isLoggedIn = req.session?.isLoggedIn;
