@@ -45,7 +45,6 @@ export const postNewTodo = async (req, res, next) => {
 export const deleteTodo = async (req, res, next) => {
   try {
     const { task } = req.body;
-    console.log(task);
 
     const todoId = req.params.id;
 
