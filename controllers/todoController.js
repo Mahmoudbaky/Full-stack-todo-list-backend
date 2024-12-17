@@ -44,19 +44,41 @@ export const postNewTodo = async (req, res, next) => {
 
 export const deleteTodo = async (req, res, next) => {
   try {
-    const isLoggedIn = req.session?.isLoggedIn;
+    const { task } = req.body;
+    console.log(task);
 
-    if (!isLoggedIn) {
-      return res.status(401).json({ message: "User not authenticated" });
-    } else {
-      const todoId = req.params.id;
+    const todoId = req.params.id;
 
-      await Todo.findByIdAndDelete(todoId);
-      return res.status(200).json({ message: "Task deleted" });
-    }
+    await Todo.findByIdAndDelete(todoId);
+
+    await User.updateOne({ _id: task.userId }, { $pull: { todoList: todoId } });
+
+    return res.status(200).json({ message: "Task deleted" });
   } catch (err) {
     console.log(err);
     return res.status(400).json({ message: "here in catch delete" });
+  }
+};
+
+export const deleteCompletedTodos = async (req, res, next) => {
+  try {
+    // const isLoggedIn = req.session?.isLoggedIn;
+
+    const completedTodos = await Todo.find({ completed: true });
+    const completedTodoIds = completedTodos.map((todo) => todo._id);
+
+    await Todo.deleteMany({ _id: { $in: completedTodoIds } });
+
+    // Step 2: Update all users to remove the deleted todo IDs
+    await User.updateMany(
+      { todoList: { $in: completedTodoIds } }, // Find users with these todo IDs
+      { $pull: { todoList: { $in: completedTodoIds } } } // Remove these IDs
+    );
+
+    return res.status(200).json({ message: "Completed tasks deleted" });
+  } catch (err) {
+    console.log(err);
+    return res.status(400).json({ message: "here in catch" });
   }
 };
 
@@ -88,28 +110,6 @@ export const putUpdateTodo = async (req, res, next) => {
     todo.text = updatedTodo.text;
     todo.save();
     return res.status(200).json({ message: "Task updated" });
-  } catch (err) {
-    console.log(err);
-    return res.status(400).json({ message: "here in catch" });
-  }
-};
-
-export const deleteCompletedTodos = async (req, res, next) => {
-  try {
-    // const isLoggedIn = req.session?.isLoggedIn;
-
-    const completedTodos = await Todo.find({ completed: true });
-    const completedTodoIds = completedTodos.map((todo) => todo._id);
-
-    await Todo.deleteMany({ _id: { $in: completedTodoIds } });
-
-    // Step 2: Update all users to remove the deleted todo IDs
-    await User.updateMany(
-      { todoList: { $in: completedTodoIds } }, // Find users with these todo IDs
-      { $pull: { todoList: { $in: completedTodoIds } } } // Remove these IDs
-    );
-
-    return res.status(200).json({ message: "Completed tasks deleted" });
   } catch (err) {
     console.log(err);
     return res.status(400).json({ message: "here in catch" });
