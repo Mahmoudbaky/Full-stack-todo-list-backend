@@ -21,5 +21,3 @@ router.delete(
   verifyToken,
   todoController.deleteCompletedTodos
 );
-
-// router.delete("/delete-todo/:id", todoController.deleteTodo);

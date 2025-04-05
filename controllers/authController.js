@@ -18,7 +18,6 @@ export const postSignUp = async (req, res, next) => {
       res.status(201).json({ message: "user already exist", userExist: true });
     } else {
       if (password === rePassword) {
-        // const hasedPassword = await bcrypt.hash(password, 12);
         const user = new User({
           username: username,
           password: password,
@@ -68,9 +67,6 @@ export const postLogIn = async (req, res, next) => {
     req.session.userId = user._id;
     req.session.username = user.username;
     req.session.isLoggedIn = true;
-
-    // console.log("Session:", req.session.username);
-    // console.log("Session:", req.session.userId);
 
     res.status(200).json({
       message: "Login successful",

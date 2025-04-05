@@ -3,15 +3,10 @@ import Todo from "../models/todo.js";
 
 export const getTodos = async (req, res, next) => {
   try {
-    const userId = req.session?.userId;
-    const isLoggedIn = req.session?.isLoggedIn;
-
-    // console.log(req.session);
-
     const userTasks = await Todo.find({
       userId: req.userId,
     });
-    // console.log(userTasks);
+
     return res.status(200).json(userTasks);
   } catch (err) {
     return res.status(400).json({ message: "here in catch" });
@@ -61,8 +56,6 @@ export const deleteTodo = async (req, res, next) => {
 
 export const deleteCompletedTodos = async (req, res, next) => {
   try {
-    // const isLoggedIn = req.session?.isLoggedIn;
-
     const completedTodos = await Todo.find({ completed: true });
     const completedTodoIds = completedTodos.map((todo) => todo._id);
 
@@ -83,8 +76,6 @@ export const deleteCompletedTodos = async (req, res, next) => {
 
 export const putUpdateTodoStatus = async (req, res, next) => {
   try {
-    // const isLoggedIn = req.session?.isLoggedIn;
-
     const todoId = req.params.id;
     const todo = await Todo.findOne({ _id: todoId });
     todo.completed = !todo.completed;
@@ -99,9 +90,6 @@ export const putUpdateTodoStatus = async (req, res, next) => {
 export const putUpdateTodo = async (req, res, next) => {
   try {
     const updatedTodo = req.body.updatedTodo;
-
-    // console.log(req.body._id);
-    // console.log(req.body.text);
 
     console.log(req.body.updatedTodo);
     const todo = await Todo.findOne({ _id: updatedTodo._id });
