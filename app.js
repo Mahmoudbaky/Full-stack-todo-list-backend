@@ -27,7 +27,9 @@ const store = new MongoDBSession({
   collection: "sessions",
 });
 const corsOptions = {
-  origin: process.env.CLIENT_URL || "http://localhost:5173",
+  origin:
+    "https://full-stack-todo-list-frontend.vercel.app" ||
+    "http://localhost:5173",
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   credentials: true, //access-control-allow-credentials:true
   optionSuccessStatus: 200,
