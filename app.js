@@ -27,9 +27,11 @@ const store = new MongoDBSession({
   collection: "sessions",
 });
 const corsOptions = {
-  origin: "http://localhost:5173",
+  origin: process.env.CLIENT_URL || "http://localhost:5173",
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   credentials: true, //access-control-allow-credentials:true
   optionSuccessStatus: 200,
+  allowedHeaders: ["Content-Type", "Authorization"],
 };
 
 const __filename = fileURLToPath(import.meta.url); // get the resolved path to the file
