@@ -27,13 +27,20 @@ const store = new MongoDBSession({
   collection: "sessions",
 });
 const corsOptions = {
-  origin:
-    "https://full-stack-todo-list-frontend.vercel.app" ||
+  origin: [
+    "https://full-stack-todo-list-frontend.vercel.app",
     "http://localhost:5173",
+  ],
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  credentials: true, //access-control-allow-credentials:true
-  optionSuccessStatus: 200,
-  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true,
+  optionsSuccessStatus: 200,
+  allowedHeaders: [
+    "Content-Type",
+    "Authorization",
+    "Origin",
+    "X-Requested-With",
+    "Accept",
+  ],
 };
 
 const __filename = fileURLToPath(import.meta.url); // get the resolved path to the file
