@@ -48,15 +48,32 @@ const __dirname = path.dirname(__filename); // get the name of the directory the
 
 // Middleware
 app.use((req, res, next) => {
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
+  // res.header(
+  //   "Access-Control-Allow-Headers",
+  //   "Origin, X-Requested-With, Content-Type, Accept"
+  // );
+  // res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS"); // Add other methods as needed
+
+  res.setHeader(
+    "Access-Control-Allow-Origin",
+    "https://full-stack-todo-list-frontend.vercel.app"
   );
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS"); // Add other methods as needed
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, PUT, PATCH, DELETE, OPTIONS"
+  );
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+
+  // Handle preflight
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
+
   next();
 });
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
 app.use(express.json());
 
 // Session Configuration
@@ -70,9 +87,21 @@ app.use(
   })
 );
 
+// Debug middleware - log all requests
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.path}`);
+  console.log("Headers:", req.headers);
+  next();
+});
+
 // Routes
 app.use(authRoutes);
 app.use(todoRoutes);
+
+// Root route for testing
+app.get("/", (req, res) => {
+  res.send("API is running");
+});
 
 // Connect to MongoDB
 mongoose
