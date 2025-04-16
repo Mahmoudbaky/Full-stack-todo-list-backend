@@ -18,7 +18,7 @@ const DbUser = process.env.DB_USER;
 const DbName = process.env.DB_NAME;
 
 const app = express();
-const port = 3001;
+const port = process.env.PORT || 3001;
 const connectionString = `mongodb+srv://${DbUser}:${DbPassword}@nodejs.srb9q.mongodb.net/${DbName}?retryWrites=true&w=majority&appName=NodeJS`;
 
 const MongoDBSession = ConnectMongoDBSession(session);
@@ -47,6 +47,26 @@ const corsOptions = {
 const __filename = fileURLToPath(import.meta.url); // get the resolved path to the file
 const __dirname = path.dirname(__filename); // get the name of the directory the file is in
 
+// IMPORTANT: Special handler for OPTIONS requests (preflight)
+app.options(
+  "*",
+  cors({
+    origin: [
+      "https://full-stack-todo-list-frontend.vercel.app",
+      "http://localhost:5173",
+    ],
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "Origin",
+      "X-Requested-With",
+      "Accept",
+    ],
+  })
+);
+
 // CORS Configuration
 // IMPORTANT: CORS middleware MUST be placed before other middleware
 app.use(cors(corsOptions));
@@ -63,8 +83,8 @@ app.use(
     saveUninitialized: false,
     store: store,
     cookie: {
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-      secure: process.env.NODE_ENV === "production",
+      sameSite: "none",
+      secure: true,
     },
     // if i set the cookie it will overwrite the session
   })
